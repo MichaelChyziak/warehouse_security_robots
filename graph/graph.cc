@@ -6,22 +6,24 @@ Graph::Graph() {
 }
 
 void Graph::addNode() {
-	Node new_node = new Node(num_of_nodes);
+	Node *new_node = new Node(num_nodes);
 	nodes.push_back(new_node);
 	num_nodes++;
 }
 
-void Graph::addEdge(Node node_a, Node node_b, unsigned int cost) {
-	Edge new_edge = new Edge(node_a, node_b, cost, num_of_edges);
+void Graph::addEdge(Node *start, Node *end, unsigned int cost) {
+	Edge *new_edge = new Edge(cost, num_edges);
+	start->addEdge(new_edge);
+	end->addEdge(new_edge);
 	edges.push_back(new_edge);
 	num_edges++;
 }
 
-vector<Node> Graph::getNodes() {
+std::vector<Node*> Graph::getNodes() {
 	return nodes;
 }
 
-vector<Edge> Graph::getEdges() {
+std::vector<Edge*> Graph::getEdges() {
 	return edges;
 }
 

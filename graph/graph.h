@@ -9,14 +9,14 @@ class Graph {
 	public:
 		Graph();
 		void addNode();
-		void addEdge(Node node_a, Node node_b, unsigned int cost);
-		vector<Node> getNodes();
-		vector<Edge> getEdges();
+		void addEdge(Node *start, Node *end, unsigned int cost);
+		std::vector<Node*> getNodes();
+		std::vector<Edge*> getEdges();
 		unsigned int getNumNodes();
 		unsigned int getNumEdges();
 	private:
-		vector<Node> nodes;
-		vector<Edge> edges;
+		std::vector<Node*> nodes;
+		std::vector<Edge*> edges;
 		unsigned int num_nodes;
 		unsigned int num_edges;
 };

@@ -8,6 +8,7 @@
 class Graph {
 	public:
 		Graph();
+		Graph(unsigned int num_nodes);
 		void addNode();
 		void addEdge(Node *start, Node *end, unsigned int cost);
 		std::vector<Node*> getNodes();

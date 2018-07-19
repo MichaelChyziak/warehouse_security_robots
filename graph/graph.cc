@@ -5,6 +5,17 @@ Graph::Graph() {
 	num_edges = 0;
 }
 
+Graph::Graph(unsigned int num_nodes) {
+	unsigned int index;
+	this->num_nodes = 0;
+	for (index = 0; index < num_nodes; index++) {
+		Node *new_node = new Node(num_nodes);
+		nodes.push_back(new_node);
+		this->num_nodes++;
+	}
+	num_edges = 0;
+}
+
 void Graph::addNode() {
 	Node *new_node = new Node(num_nodes);
 	nodes.push_back(new_node);

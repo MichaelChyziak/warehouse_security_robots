@@ -7,16 +7,33 @@ void chinesePostman(Graph *graph) {
 	std::vector<Node*> odd_nodes;
 	std::vector<std::vector<Node*>> odd_node_pairings;
 	std::vector<Node*> best_odd_path;
+	std::pair<std::vector<Node*>, std::vector<unsigned int>> missing_node_pairings; //Node pairings, cost of edge between the 2 nodes
+	std::vector<Node*> missing_node_pairs;
+	std::vector<unsigned int> missing_edge_costs;
+	unsigned int index_eularian;
+	unsigned int index_missing;
 
 	odd_nodes = findOddNodes(graph->getNodes(), graph->getNumNodes());
 
 	if (odd_nodes.size() != 0) {
 		odd_node_pairings = findOddNodePairings(odd_nodes, 0);
 		best_odd_path = bestOddPairingPath(graph, odd_node_pairings);
-		// TODO make eularian
+		// Make eularian by adding the edges between the following pairs of nodes with their appropriate cost
+		for (index_eularian = 0; index_eularian < best_odd_path.size(); index_eularian = index_eularian + 2) {
+			missing_node_pairings = dijkstraVisitedNodes(graph, best_odd_path[index_eularian], best_odd_path[index_eularian+1]);
+			missing_node_pairs = missing_node_pairings.first;
+			missing_edge_costs = missing_node_pairings.second;
+			for (index_missing = 0; index_missing + 1 < missing_node_pairs.size(); index_missing++) {
+				//TODO REMOVE PRINTF
+				printf("Edge from: %d-%d, cost: %d\n", missing_node_pairs[index_missing]->getId(), missing_node_pairs[index_missing + 1]->getId(), missing_edge_costs[index_missing]);
+				graph->addEdge(missing_node_pairs[index_missing], missing_node_pairs[index_missing + 1], missing_edge_costs[index_missing]);
+			}
+		}
+
 	}
 	
 	// TODO solve since now eularian
+	// TODO HERE NOW
 }
 
 std::vector<Node*> findOddNodes(std::vector<Node*> nodes, unsigned int num_nodes) {

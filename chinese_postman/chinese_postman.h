@@ -5,6 +5,7 @@
 #include "../dijkstra/dijkstra.h"
 #include <vector>
 #include <limits.h>
+#include <utility>
 
 void chinesePostman(Graph *graph);
 std::vector<Node*> findOddNodes(std::vector<Node*> nodes, unsigned int num_nodes);

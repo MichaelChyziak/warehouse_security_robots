@@ -7,9 +7,10 @@
 #include <limits.h>
 #include <utility>
 
-void chinesePostman(Graph *graph);
+std::vector<Node*> chinesePostman(Graph *graph, Node* start_node);
 std::vector<Node*> findOddNodes(std::vector<Node*> nodes, unsigned int num_nodes);
 std::vector<std::vector<Node*>> findOddNodePairings(std::vector<Node*> odd_nodes, unsigned int start_index);
 std::vector<Node*> bestOddPairingPath(Graph *graph, std::vector<std::vector<Node*>> node_pairings);
+std::vector<Node*> getEularianCircuit(Graph* graph, Node* start_node);
 
 #endif // CHINESE_POSTMAN_H

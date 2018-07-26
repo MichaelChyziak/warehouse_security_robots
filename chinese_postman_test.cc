@@ -36,9 +36,16 @@ int main(int argc, char* argv[]) {
 	graph->addEdge(nodes[7], nodes[8], 1);
 
 	// Run chinese postman algorithm
-	chinesePostman(graph);
+	std::vector<Node*> node_traversal;
+	node_traversal = chinesePostman(graph, nodes[0]);
 
-	// TODO print node output order
+	// Node traversal printed output
+	unsigned int index_traversal;
+	printf("Node Traversal: ");
+	for (index_traversal = 0; index_traversal < node_traversal.size(); index_traversal++) {
+		printf("%d->", node_traversal[index_traversal]->getId());
+	}
+	printf("DONE\n");
 
 	return 0;
 }

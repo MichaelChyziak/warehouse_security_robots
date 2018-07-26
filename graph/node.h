@@ -16,6 +16,10 @@ class Node {
 		std::vector<Edge*> getEdges();
 		unsigned int getNumEdges();
 		unsigned int getNumNeighbours();
+		bool hasUnhiddenEdge();
+		std::vector<Edge*> getUnhiddenEdges();
+		Node* getNeighbour(Edge* shared_edge);
+		bool hasEdge(Edge* edge);
 	private:
 		unsigned int id;
 		std::vector<Edge*> edges;

@@ -93,3 +93,63 @@ unsigned int Node::getNumEdges() {
 unsigned int Node::getNumNeighbours() {
 	return num_neighbours;
 }
+
+bool Node::hasUnhiddenEdge() {
+
+	// Variables
+	unsigned int index_edge;
+
+	for (index_edge = 0; index_edge < num_edges; index_edge++) {
+		// If false means that values edges are unhidden
+		if (edges[index_edge]->getHidden() == false) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+std::vector<Edge*> Node::getUnhiddenEdges() {
+	
+	// Variables
+	unsigned int index_edge;
+	std::vector<Edge*> unhidden_edges;
+
+	for (index_edge = 0; index_edge < num_edges; index_edge++) {
+		if (edges[index_edge]->getHidden() == false) {
+			unhidden_edges.push_back(edges[index_edge]);
+		}
+	}
+
+	return unhidden_edges;
+}
+
+// Must provide an valid edge that is shared with this node
+Node* Node::getNeighbour(Edge* shared_edge) {
+
+	// Variables
+	unsigned int index_neighbours;
+
+	for (index_neighbours = 0; index_neighbours < num_neighbours; index_neighbours++) {
+		if (neighbours[index_neighbours]->hasEdge(shared_edge) == true) {
+			return neighbours[index_neighbours];
+		}
+	}
+
+
+
+}
+
+bool Node::hasEdge(Edge* edge) {
+	
+	// Variables
+	unsigned int index_edges;
+
+	for (index_edges = 0; index_edges < num_edges; index_edges++) {
+		if (edges[index_edges] == edge) {
+			return true;
+		}
+	}
+
+	return false;
+}

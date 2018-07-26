@@ -1,7 +1,6 @@
 #include "chinese_postman.h"
-#include <stdio.h> //TODO REMOVE
 
-void chinesePostman(Graph *graph) {
+std::vector<Node*> chinesePostman(Graph *graph, Node* start_node) {
 	
 	// Variables
 	std::vector<Node*> odd_nodes;
@@ -10,6 +9,7 @@ void chinesePostman(Graph *graph) {
 	std::pair<std::vector<Node*>, std::vector<unsigned int>> missing_node_pairings; //Node pairings, cost of edge between the 2 nodes
 	std::vector<Node*> missing_node_pairs;
 	std::vector<unsigned int> missing_edge_costs;
+	std::vector<Node*> eularian_circuit;
 	unsigned int index_eularian;
 	unsigned int index_missing;
 
@@ -24,16 +24,15 @@ void chinesePostman(Graph *graph) {
 			missing_node_pairs = missing_node_pairings.first;
 			missing_edge_costs = missing_node_pairings.second;
 			for (index_missing = 0; index_missing + 1 < missing_node_pairs.size(); index_missing++) {
-				//TODO REMOVE PRINTF
-				printf("Edge from: %d-%d, cost: %d\n", missing_node_pairs[index_missing]->getId(), missing_node_pairs[index_missing + 1]->getId(), missing_edge_costs[index_missing]);
 				graph->addEdge(missing_node_pairs[index_missing], missing_node_pairs[index_missing + 1], missing_edge_costs[index_missing]);
 			}
 		}
 
 	}
-	
-	// TODO solve since now eularian
-	// TODO HERE NOW
+
+	// Solve now since eularian graph (0 odd degree nodes)	
+	eularian_circuit = getEularianCircuit(graph, start_node);
+	return eularian_circuit;
 }
 
 std::vector<Node*> findOddNodes(std::vector<Node*> nodes, unsigned int num_nodes) {
@@ -107,4 +106,55 @@ std::vector<Node*> bestOddPairingPath(Graph *graph, std::vector<std::vector<Node
 	}
 
 	return node_pairings[best_node_pairing];
+}
+
+std::vector<Node*> getEularianCircuit(Graph* graph, Node* start_node) {
+
+	// Variables
+	std::vector<Node*> current_path;
+	std::vector<Node*> circuit;
+	unsigned int num_edges;
+	Node* current_node;
+	Edge* current_edge;
+	std::vector<Edge*> edges;
+	unsigned int index_edges;
+
+	// Initialization
+	current_node = start_node;
+	current_path.push_back(current_node);
+	num_edges = 0;
+
+	// Create the circuit (will be in reverse format)
+	while (num_edges < graph->getNumEdges()) {
+		// Go to a random edge (0th index) and hide it from the graph
+		// Continue until reach a node with no possible edges to take
+		while (current_node->hasUnhiddenEdge() == true) {
+			current_edge = current_node->getUnhiddenEdges()[0];
+			num_edges++;
+			current_node = current_node->getNeighbour(current_edge);
+			current_path.push_back(current_node);
+			current_edge->setHidden();
+		}
+
+		// Create circuit if we reach a dead end
+		if (current_path.size() > 0) {
+			circuit.push_back(current_path.back());
+			current_path.pop_back();
+			current_node = current_path.back();
+		}
+	}
+
+	// Add remaining current path to circuit
+	while (current_path.size() > 0) {
+		circuit.push_back(current_path.back());
+		current_path.pop_back();
+	}
+
+	// Unhide all edges
+	edges = graph->getEdges();
+	for (index_edges = 0; index_edges < edges.size(); index_edges++) {
+		edges[index_edges]->setUnhidden();
+	}
+
+	return circuit; // This circuit is the inverse of that path to take (both are valid)
 }

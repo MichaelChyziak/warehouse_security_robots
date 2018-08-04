@@ -1,33 +1,27 @@
 #include "chinese_postman.h"
 
-std::vector<Node*> chinesePostman(Graph *graph, Node* start_node) {
+std::vector<unsigned int> chinesePostman(std::vector<std::vector<unsigned int>> graph, unsigned int start_node) {
 	
 	// Variables
-	std::vector<Node*> odd_nodes;
-	std::vector<std::vector<Node*>> odd_node_pairings;
-	std::vector<Node*> best_odd_path;
-	std::pair<std::vector<Node*>, std::vector<unsigned int>> missing_node_pairings; //Node pairings, cost of edge between the 2 nodes
-	std::vector<Node*> missing_node_pairs;
-	std::vector<unsigned int> missing_edge_costs;
-	std::vector<Node*> eularian_circuit;
+	std::vector<unsigned int> odd_nodes;
+	std::vector<std::vector<unsigned int>> odd_node_pairings; //pairings are matched together: 0 and 1, 2 and 3, etc...
+	std::vector<unsigned int> best_odd_path;
+	std::vector<unsigned int> missing_node_pairings; //Node pairings (index 0 and 1 is a pair, 2 and 3 a pair, etc.)
+	std::vector<unsigned int> eularian_circuit;
 	unsigned int index_eularian;
 	unsigned int index_missing;
 
-	odd_nodes = findOddNodes(graph->getNodes(), graph->getNumNodes());
+	odd_nodes = findOddNodes(graph);
+	odd_node_pairings = findOddNodePairings(odd_nodes, 0);
 
-	if (odd_nodes.size() != 0) {
-		odd_node_pairings = findOddNodePairings(odd_nodes, 0);
-		best_odd_path = bestOddPairingPath(graph, odd_node_pairings);
-		// Make eularian by adding the edges between the following pairs of nodes with their appropriate cost
-		for (index_eularian = 0; index_eularian < best_odd_path.size(); index_eularian = index_eularian + 2) {
-			missing_node_pairings = dijkstraVisitedNodes(graph, best_odd_path[index_eularian], best_odd_path[index_eularian+1]);
-			missing_node_pairs = missing_node_pairings.first;
-			missing_edge_costs = missing_node_pairings.second;
-			for (index_missing = 0; index_missing + 1 < missing_node_pairs.size(); index_missing++) {
-				graph->addEdge(missing_node_pairs[index_missing], missing_node_pairs[index_missing + 1], missing_edge_costs[index_missing]);
-			}
+	best_odd_path = bestOddPairingPath(graph, odd_node_pairings);
+
+	// Make eularian by adding the edges between the following pairs of nodes with their appropriate cost
+	for (index_eularian = 0; index_eularian < best_odd_path.size(); index_eularian = index_eularian + 2) {
+		missing_node_pairings = dijkstraVisitedNodes(graph, best_odd_path[index_eularian], best_odd_path[index_eularian+1]);
+		for (index_missing = 0; index_missing + 1 < missing_node_pairings.size(); index_missing++) {
+			addGraphEdge(graph, missing_node_pairings[index_missing], missing_node_pairings[index_missing + 1]);
 		}
-
 	}
 
 	// Solve now since eularian graph (0 odd degree nodes)	
@@ -35,28 +29,33 @@ std::vector<Node*> chinesePostman(Graph *graph, Node* start_node) {
 	return eularian_circuit;
 }
 
-std::vector<Node*> findOddNodes(std::vector<Node*> nodes, unsigned int num_nodes) {
+std::vector<unsigned int> findOddNodes(std::vector<std::vector<unsigned int>> graph) {
 	
 	// Variables
-	int node_index;
-	std::vector<Node*> odd_nodes;
+	unsigned int graph_row_index;
+	unsigned int graph_col_index;
+	unsigned int edge_count;
+	std::vector<unsigned int> odd_nodes;
 
-	for (node_index = 0; node_index < num_nodes; node_index++) {
-		// Check if the node is even or odd degree (even or odd number of edges)
-		if (nodes[node_index]->getNumEdges() % 2 != 0) {
-			odd_nodes.push_back(nodes[node_index]);
+	for (graph_row_index = 0; graph_row_index < graph.size(); graph_row_index++) {
+		edge_count = 0;
+		for (graph_col_index = 0; graph_col_index < graph[graph_row_index].size(); graph_col_index++) {
+			edge_count += graph[graph_row_index][graph_col_index];
+		}	
+		if (edge_count % 2 == 1) {
+			odd_nodes.push_back(graph_row_index);
 		}
 	}
 
 	return odd_nodes;
 }
 
-std::vector<std::vector<Node*>> findOddNodePairings(std::vector<Node*> odd_nodes, unsigned int start_index) {
+std::vector<std::vector<unsigned int>> findOddNodePairings(std::vector<unsigned int> odd_nodes, unsigned int start_index) {
 
 	// Variables
-	std::vector<std::vector<Node*>> node_pairings;
-	std::vector<std::vector<Node*>> recursive_pairings;
-	std::vector<Node*> new_pairing;
+	std::vector<std::vector<unsigned int>> node_pairings;
+	std::vector<std::vector<unsigned int>> recursive_pairings;
+	std::vector<unsigned int> new_pairing;
 	unsigned int index_swapper = start_index + 1;
 	unsigned int index_swappee;
 
@@ -80,7 +79,7 @@ std::vector<std::vector<Node*>> findOddNodePairings(std::vector<Node*> odd_nodes
 }
 
 // Cannot pass empty graph and/or node_pairings
-std::vector<Node*> bestOddPairingPath(Graph *graph, std::vector<std::vector<Node*>> node_pairings) {
+std::vector<unsigned int> bestOddPairingPath(std::vector<std::vector<unsigned int>> graph, std::vector<std::vector<unsigned int>> node_pairings) {
 	
 	// Variables
 	unsigned int best_cost;
@@ -108,32 +107,28 @@ std::vector<Node*> bestOddPairingPath(Graph *graph, std::vector<std::vector<Node
 	return node_pairings[best_node_pairing];
 }
 
-std::vector<Node*> getEularianCircuit(Graph* graph, Node* start_node) {
+std::vector<unsigned int> getEularianCircuit(std::vector<std::vector<unsigned int>> graph, unsigned int start_node) {
 
 	// Variables
-	std::vector<Node*> current_path;
-	std::vector<Node*> circuit;
-	unsigned int num_edges;
-	Node* current_node;
-	Edge* current_edge;
-	std::vector<Edge*> edges;
-	unsigned int index_edges;
+	std::vector<unsigned int> current_path;
+	std::vector<unsigned int> circuit;
+	unsigned int current_node;
+	unsigned int new_node;
 
 	// Initialization
 	current_node = start_node;
 	current_path.push_back(current_node);
-	num_edges = 0;
 
 	// Create the circuit (will be in reverse format)
-	while (num_edges < graph->getNumEdges()) {
+	while (graphHasEdge(graph) == true) {
 		// Go to a random edge (0th index) and hide it from the graph
 		// Continue until reach a node with no possible edges to take
-		while (current_node->hasUnhiddenEdge() == true) {
-			current_edge = current_node->getUnhiddenEdges()[0];
-			num_edges++;
-			current_node = current_node->getNeighbour(current_edge);
-			current_path.push_back(current_node);
-			current_edge->setHidden();
+		while (graphNodeHasNeighbour(graph, current_node) == true) {
+			new_node = getGraphNodeNieghbours(graph, current_node)[0];
+			graph[current_node][new_node]--;
+			graph[new_node][current_node]--;
+			current_path.push_back(new_node);
+			current_node = new_node;
 		}
 
 		// Create circuit if we reach a dead end
@@ -148,12 +143,6 @@ std::vector<Node*> getEularianCircuit(Graph* graph, Node* start_node) {
 	while (current_path.size() > 0) {
 		circuit.push_back(current_path.back());
 		current_path.pop_back();
-	}
-
-	// Unhide all edges
-	edges = graph->getEdges();
-	for (index_edges = 0; index_edges < edges.size(); index_edges++) {
-		edges[index_edges]->setUnhidden();
 	}
 
 	return circuit; // This circuit is the inverse of that path to take (both are valid)

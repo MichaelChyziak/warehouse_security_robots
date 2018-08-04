@@ -2,24 +2,14 @@
 #define GRAPH_H
 
 #include <vector>
-#include "node.h"
-#include "edge.h"
 
-class Graph {
-	public:
-		Graph();
-		Graph(unsigned int num_nodes);
-		void addNode();
-		void addEdge(Node *start, Node *end, unsigned int cost);
-		std::vector<Node*> getNodes();
-		std::vector<Edge*> getEdges();
-		unsigned int getNumNodes();
-		unsigned int getNumEdges();
-	private:
-		std::vector<Node*> nodes;
-		std::vector<Edge*> edges;
-		unsigned int num_nodes;
-		unsigned int num_edges;
-};
+const unsigned int EDGE_COST = 1;
+
+std::vector<std::vector<unsigned int>> createGraph(unsigned int num_nodes);
+void addGraphEdge(std::vector<std::vector<unsigned int>> &graph, unsigned int node_a, unsigned int node_b);
+std::vector<unsigned int> getNeighbours(std::vector<std::vector<unsigned int>> graph, unsigned int root_node);
+bool graphHasEdge(std::vector<std::vector<unsigned int>> graph);
+bool graphNodeHasNeighbour(std::vector<std::vector<unsigned int>> graph, unsigned int node);
+std::vector<unsigned int> getGraphNodeNieghbours(std::vector<std::vector<unsigned int>> graph, unsigned int node);
 
 #endif // GRAPH_H

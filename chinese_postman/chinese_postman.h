@@ -1,16 +1,14 @@
 #ifndef CHINESE_POSTMAN_H
 #define CHINESE_POSTMAN_H
 
-#include "../graph/graph.h"
 #include "../dijkstra/dijkstra.h"
 #include <vector>
 #include <limits.h>
-#include <utility>
 
-std::vector<Node*> chinesePostman(Graph *graph, Node* start_node);
-std::vector<Node*> findOddNodes(std::vector<Node*> nodes, unsigned int num_nodes);
-std::vector<std::vector<Node*>> findOddNodePairings(std::vector<Node*> odd_nodes, unsigned int start_index);
-std::vector<Node*> bestOddPairingPath(Graph *graph, std::vector<std::vector<Node*>> node_pairings);
-std::vector<Node*> getEularianCircuit(Graph* graph, Node* start_node);
+std::vector<unsigned int> chinesePostman(std::vector<std::vector<unsigned int>> graph, unsigned int start_node);
+std::vector<unsigned int> findOddNodes(std::vector<std::vector<unsigned int>> graph);
+std::vector<std::vector<unsigned int>> findOddNodePairings(std::vector<unsigned int> odd_nodes, unsigned int start_index);
+std::vector<unsigned int> bestOddPairingPath(std::vector<std::vector<unsigned int>> graph, std::vector<std::vector<unsigned int>> node_pairings);
+std::vector<unsigned int> getEularianCircuit(std::vector<std::vector<unsigned int>> graph, unsigned int start_node);
 
 #endif // CHINESE_POSTMAN_H

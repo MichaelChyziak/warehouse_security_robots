@@ -10,6 +10,6 @@ unsigned int findClosestRobotToIntruder(std::vector<std::vector<unsigned int>> g
 std::vector<unsigned int> followIntruder(std::vector<std::vector<unsigned int>> graph, unsigned int intruder, unsigned int robot);
 std::vector<std::vector<unsigned int>> futureLocations(std::vector<std::vector<unsigned int>> graph, unsigned int start, unsigned int search_depth);
 std::vector<std::vector<unsigned int>> futureLocationsOptimized(std::vector<std::vector<unsigned int>> graph, std::vector<std::vector<unsigned int>> future_locations);
-
+std::vector<std::vector<unsigned int>> getRankedRobotPaths(std::vector<std::vector<unsigned int>> graph, std::vector<std::vector<unsigned int>> robot_paths, std::vector<std::vector<unsigned int>> intruder_paths);
 
 #endif // ROBOTS_H

@@ -142,5 +142,39 @@ int main(int argc, char* argv[]) {
 		printf("\n");
 	}
 
+	// Cutoff robot score
+	unsigned int robot_cutoff;
+	if (robot_closest == robot_1) {
+		robot_cutoff = robot_2;
+	}
+	else {
+		robot_cutoff = robot_1;
+	}
+	std::vector<std::vector<unsigned int>> cutoff_locations;
+	std::vector<std::vector<unsigned int>> cutoff_locations_optimized;
+	cutoff_locations = futureLocations(graph, inverse_follow_path[inverse_follow_path.size() - 1], search_depth);
+	cutoff_locations_optimized = futureLocationsOptimized(graph, cutoff_locations);
+	std::vector<std::vector<unsigned int>> scores;
+	scores = getRankedRobotPaths(graph, cutoff_locations_optimized, intruder_locations_optimized);
+
+	// Cutoff robot score output
+	printf("Cutoff Robot Locations:\n");
+	for (depth_index = 0; depth_index < cutoff_locations_optimized.size(); depth_index++) {
+		printf("Depth: %d\n", depth_index);
+		for (location_index = 0; location_index < cutoff_locations_optimized[depth_index].size(); location_index++) {
+			printf("%d, ", cutoff_locations_optimized[depth_index][location_index]);
+		}
+		printf("\n");
+	}
+	printf("Robot: %d\n", robot_cutoff);
+	printf("Cutoff Robot Score:\n");
+	for (depth_index = 0; depth_index < scores.size(); depth_index++) {
+		printf("Depth: %d\n", depth_index);
+		for (location_index = 0; location_index < scores[depth_index].size(); location_index++) {
+			printf("%d, ", scores[depth_index][location_index]);
+		}
+		printf("\n");
+	}
+
 	return 0;
 }

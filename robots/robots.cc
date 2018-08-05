@@ -1,5 +1,5 @@
 #include "robots.h"
-#include <stdio.h> // TODO REMOVE
+
 // Returns robot closest to intruder
 // Intruder and robot_x are their location
 unsigned int findClosestRobotToIntruder(std::vector<std::vector<unsigned int>> graph, unsigned int intruder, unsigned int robot_1, unsigned int robot_2, unsigned int robot_3) {
@@ -84,4 +84,35 @@ std::vector<std::vector<unsigned int>> futureLocationsOptimized(std::vector<std:
 	}
 
 	return locations_optimized;
+}
+
+// Stores a one-one corresponding "score" to each possible destination in robot_paths (0 = the worst, higher numbers = better)
+std::vector<std::vector<unsigned int>> getRankedRobotPaths(std::vector<std::vector<unsigned int>> graph, std::vector<std::vector<unsigned int>> robot_paths, std::vector<std::vector<unsigned int>> intruder_paths) {
+	unsigned int paths_index;
+	unsigned int nodes_robot_index;
+	unsigned int nodes_intruder_index;
+	unsigned int score;
+	std::vector<std::vector<unsigned int>> scores;
+	std::vector<unsigned int> intermediate_scores;
+
+	// First one in robot_paths is our current location, staying in spot is not an option (for now)
+	// Therefore gets worst score possible, 0
+	intermediate_scores.push_back(0);
+	scores.push_back(intermediate_scores);
+
+	for (paths_index = 0; paths_index + 1 < robot_paths.size() && paths_index < intruder_paths.size(); paths_index++) {
+		intermediate_scores.clear();
+		for (nodes_robot_index = 0; nodes_robot_index < robot_paths[paths_index + 1].size(); nodes_robot_index++) {
+			score = 0;
+			for (nodes_intruder_index = 0; nodes_intruder_index < intruder_paths[paths_index].size(); nodes_intruder_index++) {
+				if (robot_paths[paths_index + 1][nodes_robot_index] == intruder_paths[paths_index][nodes_intruder_index]) {
+					score += 1;
+				}
+			}
+			intermediate_scores.push_back(score);
+		}
+		scores.push_back(intermediate_scores);
+	}
+
+	return scores;
 }

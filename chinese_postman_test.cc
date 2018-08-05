@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "graph/graph.h"
+#include "graphGen/graphGen.h"
 #include "chinese_postman/chinese_postman.h"
 
 int main(int argc, char* argv[]) {
@@ -119,6 +120,25 @@ int main(int argc, char* argv[]) {
 	printf("Node Traversal 2: ");
 	for (index_traversal = 0; index_traversal < node_traversal_2.size(); index_traversal++) {
 		printf("%d->", node_traversal_2[index_traversal]);
+	}
+	printf("DONE\n");
+
+	const std::vector< std::vector<unsigned int> > warehouse = {	{1,1,2,1,1,1,1,1},
+                                                        			{1,0,0,0,0,0,1,1},
+																	{1,0,1,1,1,0,0,2},
+																	{2,0,1,1,1,0,1,1},
+																	{1,0,1,0,0,0,1,1},
+																	{1,0,0,0,1,0,0,1},
+																	{1,1,1,1,1,0,1,1},
+																	{1,1,1,1,1,2,1,1}  };
+	
+	std::vector<std::vector<unsigned int>> graph3 = createWarehouseGraph(warehouse);
+	std::vector<unsigned int> node_traversal_3 = chinesePostman(graph3, 0);
+
+	// Node traversal printed output
+	printf("Node Traversal 3: ");
+	for (index_traversal = 0; index_traversal < node_traversal_3.size(); index_traversal++) {
+		printf("%d->", node_traversal_3[index_traversal]);
 	}
 	printf("DONE\n");
 

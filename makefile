@@ -1,10 +1,10 @@
 CXX := g++
 
 # Can add sources here
-SRCS=graph/graph.cc chinese_postman/chinese_postman.cc dijkstra/dijkstra.cc robots/robots.cc
+SRCS=graph/graph.cc graphGen/graphGen.cc chinese_postman/chinese_postman.cc dijkstra/dijkstra.cc robots/robots.cc
 OBJS=$(subst .cc,.o,$(SRCS))
 
-all: warehouse_security_robots chinese_test
+all: warehouse_security_robots chinese_test robots_test
 
 warehouse_security_robots: $(OBJS)
 	$(CXX) -o warehouse_security_robots warehouse_security_robots.cc $(OBJS)

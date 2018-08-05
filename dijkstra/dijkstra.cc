@@ -126,5 +126,7 @@ std::vector<unsigned int> dijkstraVisitedNodes(std::vector<std::vector<unsigned 
 		index_node = previous_node_id[index_node];
 	}
 
+	// Reverse order of nodes (they are reversed)
+	std::reverse(optimal_path.begin(), optimal_path.end());
 	return optimal_path;
 }

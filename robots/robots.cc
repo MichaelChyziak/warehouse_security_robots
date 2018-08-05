@@ -86,18 +86,19 @@ std::vector<std::vector<unsigned int>> futureLocationsOptimized(std::vector<std:
 	return locations_optimized;
 }
 
-// Stores a one-one corresponding "score" to each possible destination in robot_paths (0 = the worst, higher numbers = better)
-std::vector<std::vector<unsigned int>> getRankedRobotPaths(std::vector<std::vector<unsigned int>> graph, std::vector<std::vector<unsigned int>> robot_paths, std::vector<std::vector<unsigned int>> intruder_paths) {
+// Stores a one-one corresponding "score" to each possible node in robot_paths (0 = the best, higher numbers = worse)
+// Use dijkstra's to get the cost (average between number of possible)
+std::vector<std::vector<float>> robotNodesScore(std::vector<std::vector<unsigned int>> graph, std::vector<std::vector<unsigned int>> robot_paths, std::vector<std::vector<unsigned int>> intruder_paths) {
 	unsigned int paths_index;
 	unsigned int nodes_robot_index;
 	unsigned int nodes_intruder_index;
-	unsigned int score;
-	std::vector<std::vector<unsigned int>> scores;
-	std::vector<unsigned int> intermediate_scores;
+	float score;
+	std::vector<std::vector<float>> scores;
+	std::vector<float> intermediate_scores;
 
 	// First one in robot_paths is our current location, staying in spot is not an option (for now)
-	// Therefore gets worst score possible, 0
-	intermediate_scores.push_back(0);
+	// Therefore gets worst score possible, UINT_MAX
+	intermediate_scores.push_back(-1);
 	scores.push_back(intermediate_scores);
 
 	for (paths_index = 0; paths_index + 1 < robot_paths.size() && paths_index < intruder_paths.size(); paths_index++) {
@@ -105,14 +106,42 @@ std::vector<std::vector<unsigned int>> getRankedRobotPaths(std::vector<std::vect
 		for (nodes_robot_index = 0; nodes_robot_index < robot_paths[paths_index + 1].size(); nodes_robot_index++) {
 			score = 0;
 			for (nodes_intruder_index = 0; nodes_intruder_index < intruder_paths[paths_index].size(); nodes_intruder_index++) {
-				if (robot_paths[paths_index + 1][nodes_robot_index] == intruder_paths[paths_index][nodes_intruder_index]) {
-					score += 1;
-				}
+				score += dijkstraCost(graph, robot_paths[paths_index + 1][nodes_robot_index], intruder_paths[paths_index][nodes_intruder_index]);
 			}
-			intermediate_scores.push_back(score);
+			intermediate_scores.push_back(score/intruder_paths[paths_index].size());
 		}
 		scores.push_back(intermediate_scores);
 	}
 
 	return scores;
+}
+
+// Returns each possible path to the full depth and returns the total score
+// First element of pair is the path traversed, second element is the score of the path
+std::vector<std::pair<std::vector<unsigned int>, float>> robotPathsScore(std::vector<std::vector<unsigned int>> graph, std::vector<std::vector<unsigned int>> robot_paths, std::vector<std::vector<float>> robot_score) {
+	std::vector<unsigned int> path;
+	float score;
+	unsigned int paths_index;
+	unsigned int node_index;
+	unsigned int score_index;
+	std::pair<std::vector<unsigned int>, float> path_score_pair;
+	std::vector<std::pair<std::vector<unsigned int>, float>> path_score_pairs;
+
+	// Get paths first, then calculates the score of the path
+	for (paths_index = 0; paths_index < robot_paths[robot_paths.size() - 1].size(); paths_index++) {
+		path = dijkstraVisitedNodes(graph, robot_paths[0][0], robot_paths[robot_paths.size() -1 ][paths_index]);
+		score = 0;
+		for (node_index = 1; node_index < path.size(); node_index++) {
+			for (score_index = 0; score_index < robot_paths[node_index].size(); score_index++) {
+				if (path[node_index] == robot_paths[node_index][score_index]) {
+					score += robot_score[node_index][score_index];
+					break;
+				}
+			}
+		}
+		path_score_pair = std::make_pair(path, score);
+		path_score_pairs.push_back(path_score_pair);
+	}
+	
+	return path_score_pairs;
 }

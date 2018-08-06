@@ -12,20 +12,26 @@ std::vector<unsigned int> chinesePostman(std::vector<std::vector<unsigned int>> 
 	unsigned int index_missing;
 
 	odd_nodes = findOddNodes(graph);
-	odd_node_pairings = findOddNodePairings(odd_nodes, 0);
 
-	best_odd_path = bestOddPairingPath(graph, odd_node_pairings);
-
-	// Make eularian by adding the edges between the following pairs of nodes with their appropriate cost
-	for (index_eularian = 0; index_eularian < best_odd_path.size(); index_eularian = index_eularian + 2) {
-		missing_node_pairings = dijkstraVisitedNodes(graph, best_odd_path[index_eularian], best_odd_path[index_eularian+1]);
-		for (index_missing = 0; index_missing + 1 < missing_node_pairings.size(); index_missing++) {
-			addGraphEdge(graph, missing_node_pairings[index_missing], missing_node_pairings[index_missing + 1]);
+	// If not eularian
+	if (odd_nodes.size() != 0) {
+		odd_node_pairings = findOddNodePairings(odd_nodes, 0);
+		best_odd_path = bestOddPairingPath(graph, odd_node_pairings);
+		// Make eularian by adding the edges between the following pairs of nodes with their appropriate cost
+		for (index_eularian = 0; index_eularian < best_odd_path.size(); index_eularian = index_eularian + 2) {
+			missing_node_pairings = dijkstraVisitedNodes(graph, best_odd_path[index_eularian], best_odd_path[index_eularian+1]);
+			for (index_missing = 0; index_missing + 1 < missing_node_pairings.size(); index_missing++) {
+				addGraphEdge(graph, missing_node_pairings[index_missing], missing_node_pairings[index_missing + 1]);
+			}
 		}
+	}
+	else {
+		// Already is eularian, so do nothing to the graph
 	}
 
 	// Solve now since eularian graph (0 odd degree nodes)	
 	eularian_circuit = getEularianCircuit(graph, start_node);
+
 	return eularian_circuit;
 }
 
@@ -80,7 +86,7 @@ std::vector<std::vector<unsigned int>> findOddNodePairings(std::vector<unsigned 
 
 // Cannot pass empty graph and/or node_pairings
 std::vector<unsigned int> bestOddPairingPath(std::vector<std::vector<unsigned int>> graph, std::vector<std::vector<unsigned int>> node_pairings) {
-	
+
 	// Variables
 	unsigned int best_cost;
 	unsigned int best_node_pairing;
@@ -93,9 +99,9 @@ std::vector<unsigned int> bestOddPairingPath(std::vector<std::vector<unsigned in
 	best_node_pairing = INT_MAX;
 
 	// Find what node pairings provides the lowest cost
-	for (index_node_pairings = 0; index_node_pairings + 1 < node_pairings.size(); index_node_pairings++) {
+	for (index_node_pairings = 0; index_node_pairings < node_pairings.size(); index_node_pairings++) {
 		current_cost = 0;
-		for (index_node = 0; index_node < node_pairings[index_node_pairings].size(); index_node = index_node + 2) {
+		for (index_node = 0; index_node + 1 < node_pairings[index_node_pairings].size(); index_node = index_node + 2) {
 			current_cost += dijkstraCost(graph, node_pairings[index_node_pairings][index_node], node_pairings[index_node_pairings][index_node + 1]);
 		}
 		if (current_cost < best_cost) {

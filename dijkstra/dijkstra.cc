@@ -1,7 +1,6 @@
 #include "dijkstra.h"
 
 unsigned int dijkstraCost(std::vector<std::vector<unsigned int>> graph, unsigned int start, unsigned int destination) {
-	
 	// Variables
 	unsigned int visited_nodes;
 	unsigned int node_cost[graph.size()]; // shortest distance from start to an index
@@ -53,7 +52,7 @@ unsigned int dijkstraCost(std::vector<std::vector<unsigned int>> graph, unsigned
 		node_visited[min_node] = true;
 		visited_nodes++;
 	}
-	
+
 	return node_cost[destination];
 }
 

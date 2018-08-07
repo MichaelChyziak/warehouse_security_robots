@@ -143,7 +143,7 @@ int main(int argc, char* argv[]) {
 	printf("DONE\n");
 
 
-
+/*
 	// Splitting up warehouse into 3 (now making it way bigger too, 50x50)
 	// Here are what each number in the array represents (this is in graphGen.h)
 	// const unsigned int PATH     = 0;
@@ -192,6 +192,6 @@ int main(int argc, char* argv[]) {
 		printf("%d->", node_traversal_robot[index_traversal]);
 	}
 	printf("DONE\n");
-
+*/
 	return 0;
 }

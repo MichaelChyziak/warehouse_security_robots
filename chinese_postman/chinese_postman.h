@@ -4,6 +4,7 @@
 #include "../dijkstra/dijkstra.h"
 #include <vector>
 #include <limits.h>
+#include <unordered_map>
 
 std::vector<unsigned int> chinesePostman(std::vector<std::vector<unsigned int>> graph, unsigned int start_node);
 std::vector<unsigned int> findOddNodes(std::vector<std::vector<unsigned int>> graph);

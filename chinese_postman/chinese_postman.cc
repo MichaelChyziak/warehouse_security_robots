@@ -93,6 +93,12 @@ std::vector<unsigned int> bestOddPairingPath(std::vector<std::vector<unsigned in
 	unsigned int current_cost;
 	unsigned int index_node_pairings;
 	unsigned int index_node;
+	std::unordered_map<unsigned int, unsigned int> pairing_hash_table;
+	std::unordered_map<unsigned int, unsigned int>::const_iterator pairing;
+	std::unordered_map<unsigned int, unsigned int>::const_iterator pairing_inverse;
+	unsigned int node_pairing_1;
+	unsigned int node_pairing_2;
+	unsigned int dijkstra_cost;
 
 	// initialize best_cost as worst case
 	best_cost = INT_MAX;
@@ -102,7 +108,20 @@ std::vector<unsigned int> bestOddPairingPath(std::vector<std::vector<unsigned in
 	for (index_node_pairings = 0; index_node_pairings < node_pairings.size(); index_node_pairings++) {
 		current_cost = 0;
 		for (index_node = 0; index_node + 1 < node_pairings[index_node_pairings].size(); index_node = index_node + 2) {
-			current_cost += dijkstraCost(graph, node_pairings[index_node_pairings][index_node], node_pairings[index_node_pairings][index_node + 1]);
+			// Search for pairing in hash table, if found take their cost from the table
+			// If not found do dijkstra's and add them to hash table
+			// Hash table works with node_pairing_1 * #odd nodes + node_pairing_2. This gives us unique pairings. Also have to add inverse
+			node_pairing_1 = node_pairings[index_node_pairings][index_node];
+			node_pairing_2 = node_pairings[index_node_pairings][index_node + 1];
+			if (pairing_hash_table.count(node_pairings[0].size() * node_pairing_1 + node_pairing_2) == 1 && pairing_hash_table.count(node_pairings[0].size() * node_pairing_2 + node_pairing_1) == 1) {
+				current_cost += pairing_hash_table[node_pairings[0].size() * node_pairing_1 + node_pairing_2];
+			}
+			else {
+				dijkstra_cost = dijkstraCost(graph, node_pairing_1, node_pairing_2);
+				pairing_hash_table.insert(std::make_pair(node_pairings[0].size() * node_pairing_1 + node_pairing_2, dijkstra_cost));
+				pairing_hash_table.insert(std::make_pair(node_pairings[0].size() * node_pairing_2 + node_pairing_1, dijkstra_cost));
+				current_cost += dijkstra_cost;
+			}
 		}
 		if (current_cost < best_cost) {
 			best_cost = current_cost;

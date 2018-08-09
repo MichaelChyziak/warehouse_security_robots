@@ -87,3 +87,8 @@ std::vector<std::vector<unsigned int>> intruderMove(unsigned int move) {
 	warehouse_with_robots[intruder_position.first][intruder_position.second] = 4;
 
 }
+
+
+bool intruderFound() {
+	return false;
+}

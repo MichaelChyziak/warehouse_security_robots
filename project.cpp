@@ -12,7 +12,7 @@ using namespace std;
 
 #define LIMIT 50    // limit
 #define BOUNDARY 45
-#define CENTER -1
+#define START -1
 
 const float DEG2RAD = 3.14159/180;
 
@@ -87,7 +87,7 @@ void setup()
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     //set the window size in X and Y direction
-    gluOrtho2D(CENTER, LIMIT, CENTER, LIMIT); // -x1, x2, -y1, y2
+    gluOrtho2D(START, LIMIT, START, LIMIT); // -x1, x2, -y1, y2
 }
 
 //keyboard movement

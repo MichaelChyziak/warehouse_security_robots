@@ -9,6 +9,7 @@
 #include<string>
 #include<math.h>
 #include "warehouse/warehouse.h"
+#include "intruder/intruder.h"
 
 using namespace std;
 
@@ -22,8 +23,12 @@ const float DEG2RAD = 3.14159/180;
 float dataMatrix[12][3];
 const int LENGTH = 10;
 
+enum STATES {patrol, intruder_patrol, intruder_chase};
+STATES state = STATES::patrol;
 
 int index =0; 
+
+std::vector<std::vector<unsigned int>>layout;
 
 //for writng texts 
 void writeText(GLfloat x, GLfloat y, int length, const char* text)
@@ -84,52 +89,85 @@ void setup()
 }
 
 //keyboard movement for intruder
-void keyboard(int key, int x, int y)
+void keyboard(unsigned char key, int x, int y)
 {
 //////////////////////////   
 //modify the intruder position
-  if(key ==49)// 1 pressed
-  {
-	intruderStart(1,index);
-  }
-	 //modify the intruder position
-  else if(key ==50) //2 pressed
-  {
-	intruderStart(2,index);
-  }
-	
-  //modify the intruder position
-  else if(key ==51) //3 pressed
-  {
-	intruder(3,index);
-  }
-	
-   //modify the intruder position
-  else if(key ==52) //4 pressed
-  {
-	intruder(4,index);
-  }
-///////////////////////////
+    if(key == 49)// 1 pressed
+    {
+        layout = intruderStart(1, index);
+        state = STATES::intruder_patrol;
+        index++;
+    }
+     //modify the intruder position
+    else if(key == 50) //2 pressed
+    {
+        layout = intruderStart(2, index);
+        state = STATES::intruder_patrol;
+        index++;
+    }
 
-   if (key == GLUT_KEY_RIGHT) //right = 2
+    //modify the intruder position
+    else if(key == 51) //3 pressed
+    {
+        layout = intruderStart(3, index);
+        state = STATES::intruder_patrol;
+        index++;
+    }
+
+    //modify the intruder position
+    else if(key == 52) //4 pressed
+    {
+        layout = intruderStart(4, index);
+        state = STATES::intruder_patrol;
+        index++;
+    }
+
+    // quit program
+    else if (key == 27) { //escape pressed
+        exit(0);
+    }
+	
+    // Request display update
+    glutPostRedisplay();
+}
+
+//keyboard movement for intruder
+void specialKeys(int key, int x, int y)
+{
+    //////////////////////////   
+    //modify the intruder position
+    if (key == GLUT_KEY_RIGHT) //right = 2
         {
-             intruderMove(2,index);   
+        if (intruderValidMove(2) == true) {
+            layout = intruderMovePatrol(2, index);
+            index++;
         }
+    }
     else if (key == GLUT_KEY_LEFT) //left =1
         {
-              intruderMove(1,index);   
+        if (intruderValidMove(1) == true) {
+            layout = intruderMovePatrol(1, index);
+            index++;
         }
+    }
     else if (key == GLUT_KEY_DOWN) //down = 4
         {
-               intruderMove(4,index);   
+        if (intruderValidMove(4) == true) {
+            layout = intruderMovePatrol(4, index);
+            index++;
         }
+    }
     else if (key == GLUT_KEY_UP) //up = 3
         {
-                intruderMove(3,index);   
+        if (intruderValidMove(3) == true) {
+            layout = intruderMovePatrol(3, index); 
+            index++;
         }
-	
-    intruderFound();
-	
+    }
+    
+    // intruderFound();
+    
     // Request display update
     glutPostRedisplay();
 }
@@ -137,49 +175,53 @@ void keyboard(int key, int x, int y)
 //robot animation
 void moveRobot(int value)
 {
-	warehousePatrolUpdate(index);
-	glutPostRedisplay();
+    if (state == STATES::patrol) {
+    	layout = warehousePatrolUpdate(index);
+    	glutPostRedisplay();
        	index++;
     	glutTimerFunc(500, moveRobot, 0);
-
+    }
 }
 
 void warehouse()
 {
-    std::vector<std::vector<unsigned int>>layout = warehousePatrolUpdate(index);
-    float startx =0,starty =0;
-    for(int i =layout.size()-1; i>=0; i--)
-    {
-        for(int j=0; j<layout.size(); j++)
-        {   //walls
-            if(layout[i][j]==1)
-            {
-                grid("wall",startx,starty,GRID_SIZE,GRID_SIZE);
-            }
-            //doors
-            else if(layout[i][j]==2)
-            {
-                grid("door",startx,starty,GRID_SIZE,GRID_SIZE);
-            }
-            //robot
-            else if(layout[i][j]==3)
-            {
-                grid("robot",startx,starty,GRID_SIZE,GRID_SIZE);
-            }
-			
-	    //intruder
-            else if(layout[i][j]==4)
-            {
-                grid("intruder",startx,starty,GRID_SIZE,GRID_SIZE);
-            }
-
-            startx +=GRID_SIZE;
-        }
-        starty +=GRID_SIZE;
-        startx =0;
-
+    if (layout.empty()) {
+        layout = warehousePatrolUpdate(index);
     }
+    if (layout.empty() == false) {
+        float startx =0,starty =0;
+        for(int i =layout.size()-1; i>=0; i--)
+        {
+            for(int j=0; j<layout.size(); j++)
+            {   //walls
+                if(layout[i][j]==1)
+                {
+                    grid("wall",startx,starty,GRID_SIZE,GRID_SIZE);
+                }
+                //doors
+                else if(layout[i][j]==2)
+                {
+                    grid("door",startx,starty,GRID_SIZE,GRID_SIZE);
+                }
+                //robot
+                else if(layout[i][j]==3)
+                {
+                    grid("robot",startx,starty,GRID_SIZE,GRID_SIZE);
+                }
+    			
+    	    //intruder
+                else if(layout[i][j]==4)
+                {
+                    grid("intruder",startx,starty,GRID_SIZE,GRID_SIZE);
+                }
 
+                startx +=GRID_SIZE;
+            }
+            starty +=GRID_SIZE;
+            startx =0;
+
+        }
+    }
 }
 void display()
 {
@@ -201,7 +243,8 @@ int main(int argc, char *argv[])
 
     setup();
     glutDisplayFunc(display);
-    //glutSpecialFunc(keyboard);
+    glutKeyboardFunc(keyboard);
+    glutSpecialFunc(specialKeys);
     glutTimerFunc(500,moveRobot,0);
 
 

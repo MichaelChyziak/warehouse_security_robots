@@ -93,34 +93,48 @@ void keyboard(unsigned char key, int x, int y)
 {
 //////////////////////////   
 //modify the intruder position
-    if(key == 49)// 1 pressed
-    {
-        layout = intruderStart(1, index);
-        state = STATES::intruder_patrol;
-        index++;
-    }
-     //modify the intruder position
-    else if(key == 50) //2 pressed
-    {
-        layout = intruderStart(2, index);
-        state = STATES::intruder_patrol;
-        index++;
-    }
+    if (state == STATES::patrol) {
+        if(key == 49)// 1 pressed
+        {
+            layout = intruderStart(1, index);
+            state = STATES::intruder_patrol;
+            if (intruderFound(layout) == true) {
+                state = STATES::intruder_chase;
+            }
+            index++;
+        }
+         //modify the intruder position
+        else if(key == 50) //2 pressed
+        {
+            layout = intruderStart(2, index);
+            state = STATES::intruder_patrol;
+            if (intruderFound(layout) == true) {
+                state = STATES::intruder_chase;
+            }
+            index++;
+        }
 
-    //modify the intruder position
-    else if(key == 51) //3 pressed
-    {
-        layout = intruderStart(3, index);
-        state = STATES::intruder_patrol;
-        index++;
-    }
+        //modify the intruder position
+        else if(key == 51) //3 pressed
+        {
+            layout = intruderStart(3, index);
+            state = STATES::intruder_patrol;
+            if (intruderFound(layout) == true) {
+                state = STATES::intruder_chase;
+            }
+            index++;
+        }
 
-    //modify the intruder position
-    else if(key == 52) //4 pressed
-    {
-        layout = intruderStart(4, index);
-        state = STATES::intruder_patrol;
-        index++;
+        //modify the intruder position
+        else if(key == 52) //4 pressed
+        {
+            layout = intruderStart(4, index);
+            state = STATES::intruder_patrol;
+            if (intruderFound(layout) == true) {
+                state = STATES::intruder_chase;
+            }
+            index++;
+        }
     }
 
     // quit program
@@ -142,6 +156,9 @@ void specialKeys(int key, int x, int y)
             {
             if (intruderValidMove(2) == true) {
                 layout = intruderMovePatrol(2, index);
+                if (intruderFound(layout) == true) {
+                    state = STATES::intruder_chase;
+                }
                 index++;
             }
         }
@@ -149,6 +166,9 @@ void specialKeys(int key, int x, int y)
             {
             if (intruderValidMove(1) == true) {
                 layout = intruderMovePatrol(1, index);
+                if (intruderFound(layout) == true) {
+                    state = STATES::intruder_chase;
+                }
                 index++;
             }
         }
@@ -156,6 +176,9 @@ void specialKeys(int key, int x, int y)
             {
             if (intruderValidMove(4) == true) {
                 layout = intruderMovePatrol(4, index);
+                if (intruderFound(layout) == true) {
+                    state = STATES::intruder_chase;
+                }
                 index++;
             }
         }
@@ -163,13 +186,14 @@ void specialKeys(int key, int x, int y)
             {
             if (intruderValidMove(3) == true) {
                 layout = intruderMovePatrol(3, index); 
+                if (intruderFound(layout) == true) {
+                    state = STATES::intruder_chase;
+                }
                 index++;
             }
         }
         
-        if (intruderFound() == true) {
-            state = STATES::intruder_chase;
-        }
+
     }
     else if (state == STATES::intruder_chase) {
         //////////////////////////   

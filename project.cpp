@@ -89,8 +89,8 @@ void keyboard(int key, int x, int y)
    //modify the intruder position
    if (key == GLUT_KEY_RIGHT)
         {
-            layout[8][2]=0 ;
-            layout[8][3]=3 ;
+           // layout[8][2]=0 ;
+            //layout[8][3]=3 ;
                 
         }
     else if (key == GLUT_KEY_LEFT)
@@ -112,7 +112,7 @@ void keyboard(int key, int x, int y)
 //robot animation
 void moveRobot(int value)
 {
-	warehousePatrolUpdate(index)
+	warehousePatrolUpdate(index);
 	glutPostRedisplay();
        	index++;
     	glutTimerFunc(500, moveRobot, 0);

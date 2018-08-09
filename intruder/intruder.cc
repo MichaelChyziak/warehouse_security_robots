@@ -127,6 +127,62 @@ std::vector<std::vector<unsigned int>> intruderMovePatrol(unsigned int move, uns
 }
 
 
-bool intruderFound() {
-	return false;
+bool intruderFound(std::vector<std::vector<unsigned int>> updatedWarehouseLayout) {
+
+	bool wasFound = false;
+	std::pair<unsigned int, unsigned int> intruderCoortinate = getNodeCoordinate(warehouse_big, intruder);
+
+	for(int i = 0; i <= vision; i++){
+		//check left
+		if((int)intruderCoortinate.second - i > 0){
+			if(updatedWarehouseLayout[intruderCoortinate.first][intruderCoortinate.second - i] == WALL || 
+				updatedWarehouseLayout[intruderCoortinate.first][intruderCoortinate.second - i] == DOOR){
+				break;
+			} else if(updatedWarehouseLayout[intruderCoortinate.first][intruderCoortinate.second - i] == ROBOT){
+				wasFound = true;
+				return wasFound;
+			}
+		}
+	}
+	
+	for(int i = 0; i <= vision; i++){
+		//check right
+		if(intruderCoortinate.second + i < updatedWarehouseLayout[0].size()){
+			if(updatedWarehouseLayout[intruderCoortinate.first][intruderCoortinate.second + i] == WALL || 
+				updatedWarehouseLayout[intruderCoortinate.first][intruderCoortinate.second + i] == DOOR){
+				break;
+			} else if(updatedWarehouseLayout[intruderCoortinate.first][intruderCoortinate.second + i] == ROBOT){
+				wasFound = true;
+				return wasFound;
+			}
+		}
+	}
+
+	for(int i = 0; i <= vision; i++){
+		//check up
+		if((int)intruderCoortinate.first - i > 0){
+			if(updatedWarehouseLayout[intruderCoortinate.first - i][intruderCoortinate.second] == WALL || 
+				updatedWarehouseLayout[intruderCoortinate.first - i][intruderCoortinate.second] == DOOR){
+				break;
+			} else if(updatedWarehouseLayout[intruderCoortinate.first - i][intruderCoortinate.second] == ROBOT){
+				wasFound = true;
+				return wasFound;
+			}
+		}
+	}
+
+	for(int i = 0; i <= vision; i++){
+		//check down
+		if((int)intruderCoortinate.first + i < updatedWarehouseLayout.size()){
+			if(updatedWarehouseLayout[intruderCoortinate.first + i][intruderCoortinate.second] == WALL || 
+				updatedWarehouseLayout[intruderCoortinate.first + i][intruderCoortinate.second] == DOOR){
+				break;
+			} else if(updatedWarehouseLayout[intruderCoortinate.first + i][intruderCoortinate.second] == ROBOT){
+				wasFound = true;
+				return wasFound;
+			}
+		}
+	}
+
+	return wasFound;
 }

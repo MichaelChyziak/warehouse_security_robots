@@ -8,6 +8,8 @@
 #include<vector>
 #include<string>
 #include<math.h>
+#include "warehouse/warehouse.h"
+
 using namespace std;
 
 #define LIMIT 50    // limit
@@ -20,18 +22,8 @@ const float DEG2RAD = 3.14159/180;
 float dataMatrix[12][3];
 const int LENGTH = 10;
 
-int layout[LENGTH][LENGTH] =  { { 1, 1, 1, 1, 1, 1, 1, 5, 1, 1 }, ///1
-                                { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 }, ///2
-                                { 1, 0, 0, 0, 1, 0, 1, 3, 0, 1 }, ///3
-                                { 1, 0, 1, 0, 1, 0, 0, 0, 0, 1 }, ///4
-                                { 1, 0, 1, 0, 0, 4, 1, 1, 0, 1 }, ///5
-                                { 5, 0, 1, 3, 1, 0, 0, 0, 0, 1 }, ///6
-                                { 1, 0, 1, 0, 1, 0, 0, 1, 0, 1 }, ///7
-                                { 1, 0, 0, 0, 0, 0, 1, 0, 0, 1 }, ///8
-                                { 1, 0, 3, 0, 0, 0, 0, 0, 0, 1 }, ///9
-                                { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }};//10
 
-int k =0; 
+int index =0; 
 
 //for writng texts 
 void writeText(GLfloat x, GLfloat y, int length, const char* text)
@@ -120,50 +112,20 @@ void keyboard(int key, int x, int y)
 //robot animation
 void moveRobot(int value)
 {
-   //modify matrix on robot positions
-    if(k==0)
-    {
-        layout[8][2]=0 ;
-        layout[8][3]=3 ;
-    
-    }
-
-    if(k==1)
-    {
-        layout[8][3]=0 ;
-        layout[8][4]=3 ;
-    
-    }
-
-    if(k==2)
-    {
-        layout[8][4]=0 ;
-        layout[8][5]=3 ;
-    
-    
-    }
-
-    if(k==3)
-    {
-        layout[8][5]=0 ;
-        layout[8][6]=3 ;
-    
-    }
-
-
-	
+	warehousePatrolUpdate(index)
 	glutPostRedisplay();
-    k++;
-    glutTimerFunc(500, moveRobot, 0);
+       	index++;
+    	glutTimerFunc(500, moveRobot, 0);
 
 }
 
 void warehouse()
 {
+    std::vector<std::vector<unsigned int>>layout = warehousePatrolUpdate(index);
     float startx =0,starty =0;
-    for(int i =LENGTH-1; i>=0; i--)
+    for(int i =layout.size()-1; i>=0; i--)
     {
-        for(int j=0; j<LENGTH; j++)
+        for(int j=0; j<layout.size(); j++)
         {   //walls
             if(layout[i][j]==1)
             {

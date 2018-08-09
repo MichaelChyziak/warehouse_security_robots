@@ -1,6 +1,6 @@
 #include "dijkstra.h"
 
-unsigned int dijkstraCost(std::vector<std::vector<unsigned int>> graph, unsigned int start, unsigned int destination) {
+unsigned int dijkstraCost(std::vector<std::vector<unsigned int>> &graph, unsigned int start, unsigned int destination) {
 	// Variables
 	unsigned int visited_nodes;
 	unsigned int node_cost[graph.size()]; // shortest distance from start to an index
@@ -58,7 +58,7 @@ unsigned int dijkstraCost(std::vector<std::vector<unsigned int>> graph, unsigned
 
 // Using dijkstra, provides all of the nodes visited to get from start to destination
 // Nodes given in pairs with which should share an edge, unsigned int is the cost of the edge
-std::vector<unsigned int> dijkstraVisitedNodes(std::vector<std::vector<unsigned int>> graph, unsigned int start, unsigned int destination) {
+std::vector<unsigned int> dijkstraVisitedNodes(std::vector<std::vector<unsigned int>> &graph, unsigned int start, unsigned int destination) {
 	
 	// Variables
 	unsigned int visited_nodes;

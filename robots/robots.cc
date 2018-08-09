@@ -1,8 +1,9 @@
 #include "robots.h"
-
+// #include <time.h> // TODO remove
+// #include <stdio.h> // TODO REMOVE
 // Returns robot closest to intruder
 // Intruder and robot_x are their location
-unsigned int findClosestRobotToIntruder(std::vector<std::vector<unsigned int>> graph, unsigned int intruder, unsigned int robot_1, unsigned int robot_2, unsigned int robot_3) {
+unsigned int findClosestRobotToIntruder(std::vector<std::vector<unsigned int>> &graph, unsigned int intruder, unsigned int robot_1, unsigned int robot_2, unsigned int robot_3) {
 	unsigned int robot_1_cost;
 	unsigned int robot_2_cost;
 	unsigned int robot_3_cost;
@@ -28,7 +29,7 @@ unsigned int findClosestRobotToIntruder(std::vector<std::vector<unsigned int>> g
 }
 
 // Returns path the robot should go to to follow the intruder
-std::vector<unsigned int> followIntruder(std::vector<std::vector<unsigned int>> graph, unsigned int intruder, unsigned int robot) {
+std::vector<unsigned int> followIntruder(std::vector<std::vector<unsigned int>> &graph, unsigned int intruder, unsigned int robot) {
 	std::vector<unsigned int> robot_path = dijkstraVisitedNodes(graph, robot, intruder);
 	return robot_path;
 }
@@ -98,7 +99,7 @@ std::vector<std::vector<unsigned int>> futurePaths(std::vector<std::vector<unsig
 // Returns each possible path to the full depth and returns the total score
 // First element of pair is the path traversed, second element is the score of the path
 // The lower the score the better
-std::vector<std::pair<std::vector<unsigned int>, unsigned int>> robotPathsScore(std::vector<std::vector<unsigned int>> graph, std::vector<std::vector<unsigned int>> robot_paths, std::vector<std::vector<unsigned int>> intruder_paths) {
+std::vector<std::pair<std::vector<unsigned int>, unsigned int>> robotPathsScore(std::vector<std::vector<unsigned int>> &graph, std::vector<std::vector<unsigned int>> robot_paths, std::vector<std::vector<unsigned int>> intruder_paths) {
 
 	// Variables
 	unsigned int robot_paths_index;
@@ -118,7 +119,9 @@ std::vector<std::pair<std::vector<unsigned int>, unsigned int>> robotPathsScore(
 				}
 				// Get the final score since we don't "catch" intruder
 				if (path_index == robot_paths[robot_paths_index].size() - 1 || path_index == intruder_paths[intruder_paths_index].size() -1) {
-					score += dijkstraCost(graph, robot_paths[robot_paths_index][path_index], intruder_paths[intruder_paths_index][path_index]);
+					// TODO TESTING
+			 		score += dijkstraCost(graph, robot_paths[robot_paths_index][path_index], intruder_paths[intruder_paths_index][path_index]);
+			 		// score += manhattanDistance(robot_paths[robot_paths_index][path_index], intruder_paths[intruder_paths_index][path_index]);
 				}
 			}
 		}
@@ -175,7 +178,8 @@ bool isNonConflictingPath(std::vector<unsigned int> cutoff_path, std::vector<uns
 
 // Returns the path that robots follow, cutoff 1, and cutoff 2 should take (in that order)
 std::vector<std::vector<unsigned int>> controlRobots(std::vector<std::vector<unsigned int>> graph, unsigned int robot_1, unsigned int robot_2, unsigned int robot_3, unsigned int intruder, unsigned int search_depth) {
-
+// clock_t start = clock();
+// clock_t stop;
 	// Variables
 	unsigned int robot_closest;
 	std::vector<unsigned int> follow_path;
@@ -233,6 +237,7 @@ std::vector<std::vector<unsigned int>> controlRobots(std::vector<std::vector<uns
 			robot_cutoff_2 = robot_1;
 		}
 	}
+
 	cutoff_locations_2 = futureLocations(graph, robot_cutoff_2, search_depth);
 	cutoff_locations_2 = futureLocationsOptimized(graph, robot_cutoff_2, cutoff_locations_2, search_depth);
 	cutoff_paths_2 = futurePaths(graph, robot_cutoff_2, cutoff_locations_2);
@@ -284,10 +289,22 @@ std::vector<std::vector<unsigned int>> controlRobots(std::vector<std::vector<uns
 	if (cutoff_2_path.empty() == true) {
 		cutoff_2_path = path_score_pairs[0].first;
 	}
-
+// stop = clock();
+// printf ("time: %f seconds.\n",((float)stop-start)/CLOCKS_PER_SEC);
 	// Add all best paths here in order: follow, cutoff 1, cutoff 2
 	final_paths.push_back(follow_path);
 	final_paths.push_back(cutoff_1_path);
 	final_paths.push_back(cutoff_2_path);
 	return final_paths;
+}
+
+// Used as heuristic for quicker dijkstras
+unsigned int manhattanDistance(unsigned int node_current, unsigned int node_destination) {
+	std::pair<unsigned int, unsigned int> node_current_position;
+	std::pair<unsigned int, unsigned int> node_destination_position;
+
+	node_current_position = getNodeCoordinate(warehouse_big, node_current);
+	node_destination_position = getNodeCoordinate(warehouse_big, node_destination);
+
+	return (abs(node_current_position.first - node_destination_position.first) + abs(node_current_position.second - node_destination_position.second));
 }

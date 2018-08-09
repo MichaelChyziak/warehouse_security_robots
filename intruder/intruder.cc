@@ -8,11 +8,6 @@ unsigned int robot_3 = -1;
 // Global overall warehouse graph
 std::vector<std::vector<unsigned int>> warehouse_graph;
 
-// Make externals we can borrow
-extern std::vector<unsigned int> node_traversal_robot_1;
-extern std::vector<unsigned int> node_traversal_robot_2;
-extern std::vector<unsigned int> node_traversal_robot_3;
-
 std::vector<std::vector<unsigned int>> intruderStart(unsigned int start_intruder_position, unsigned int current_index) {
 	std::vector<std::vector<unsigned int>> warehouse_with_robots;
 	std::pair<unsigned int, unsigned int> intruder_position;
@@ -33,8 +28,14 @@ std::vector<std::vector<unsigned int>> intruderStart(unsigned int start_intruder
 	warehouse_with_robots = warehousePatrolUpdate(current_index);
 	intruder_position = getNodeCoordinate(warehouse_big, intruder);
 
+	if (warehouse_with_robots[intruder_position.first][intruder_position.second] == 3) {
+		intruder_caught = true;
+	}
+
 	// Create graph again with intruder location
-	warehouse_with_robots[intruder_position.first][intruder_position.second] = 4;
+	if (intruder_caught == false) {
+		warehouse_with_robots[intruder_position.first][intruder_position.second] = 4;
+	}
 
 	return warehouse_with_robots;
 }
@@ -132,14 +133,22 @@ std::vector<std::vector<unsigned int>> intruderMovePatrol(unsigned int move, uns
 
 	// Create graph again with updated intruder location
 	intruder_position = getNodeCoordinate(warehouse_big, intruder);
-	warehouse_with_robots[intruder_position.first][intruder_position.second] = 4;
+
+	if (warehouse_with_robots[intruder_position.first][intruder_position.second] == 3) {
+		intruder_caught = true;
+	}
+
+	if (intruder_caught == false) {
+		warehouse_with_robots[intruder_position.first][intruder_position.second] = 4;
+	}
 
 	return warehouse_with_robots;
 }
 
 // index must be > 0
-std::vector<std::vector<unsigned int>> intruderMoveChased(unsigned int move, unsigned int index) {
-	unsigned int search_depth = 10;
+std::vector<std::vector<unsigned int>> intruderMoveChased(unsigned int move, std::vector<std::vector<unsigned int>> &old_graph) {
+
+	unsigned int search_depth = 5;
 	std::pair<unsigned int, unsigned int> robot_1_position;
 	std::pair<unsigned int, unsigned int> robot_2_position;
 	std::pair<unsigned int, unsigned int> robot_3_position;
@@ -147,13 +156,37 @@ std::vector<std::vector<unsigned int>> intruderMoveChased(unsigned int move, uns
 	std::pair<unsigned int, unsigned int> intruder_position;
 	unsigned int position_count;
 	unsigned int nodes_counted = 0;
+	unsigned int graph_index_row;
+	unsigned int graph_index_col;
 
 	// If robots just found intruder, they are not set yet
 	if (robot_1 == -1 && robot_2 == -1 && robot_3 == -1) {
-		robot_1 = node_traversal_robot_1[index];
-		robot_2 = node_traversal_robot_2[index];
-		robot_3 = node_traversal_robot_3[index];
+		// Update robot locations to be global and not local to their warehouse segment
+		for (graph_index_row = 0; graph_index_row < old_graph.size(); graph_index_row++) {
+			for (graph_index_col = 0; graph_index_col < old_graph[0].size(); graph_index_col++) {
+				if (old_graph[graph_index_row][graph_index_col] == 0) {
+					nodes_counted++;
+				}
+				else if (old_graph[graph_index_row][graph_index_col] == 3) {
+					nodes_counted++;
+					if (robot_1 == -1) {
+						robot_1 = nodes_counted-1;
+					}
+					else if (robot_2 == -1) {
+						robot_2 = nodes_counted;
+					}
+					else { // robot_3 == -1
+						robot_3 = nodes_counted;
+						break;
+					}
+				}
+			}
+			if (robot_3 != -1) {
+				break;
+			} 
+		}
 	}
+	nodes_counted = 0;
 
 	// Create warehouse_graph if not already
 	if (warehouse_graph.empty() == true) {
@@ -210,6 +243,10 @@ std::vector<std::vector<unsigned int>> intruderMoveChased(unsigned int move, uns
 		intruder = intruder + nodes_counted;
 	}
 
+	if (intruder == robot_1 || intruder == robot_2 || intruder == robot_3) {
+		intruder_caught = true;
+	}
+
 	// updates the robot nodes to be in their next location
 	robot_1 = robot_paths[0][1];
 	robot_2 = robot_paths[1][1];
@@ -217,6 +254,10 @@ std::vector<std::vector<unsigned int>> intruderMoveChased(unsigned int move, uns
 	robot_1_position = getNodeCoordinate(warehouse_big, robot_1);
 	robot_2_position = getNodeCoordinate(warehouse_big, robot_2);
 	robot_3_position = getNodeCoordinate(warehouse_big, robot_3);
+
+	if (intruder == robot_1 || intruder == robot_2 || intruder == robot_3) {
+		intruder_caught = true;
+	}
 
 	// Create graph again with robot locations
 	std::vector<std::vector<unsigned int>> updated_warehouse = warehouse_big;

@@ -27,6 +27,7 @@ enum STATES {patrol, intruder_patrol, intruder_chase};
 STATES state = STATES::patrol;
 
 int index =0; 
+bool intruder_caught = false;
 
 std::vector<std::vector<unsigned int>>layout;
 
@@ -141,6 +142,11 @@ void keyboard(unsigned char key, int x, int y)
     else if (key == 27) { //escape pressed
         exit(0);
     }
+
+    // Check if game over
+    if (intruder_caught == true) {
+        printf("Game Over\n");
+    }
 	
     // Request display update
     glutPostRedisplay();
@@ -201,27 +207,32 @@ void specialKeys(int key, int x, int y)
         if (key == GLUT_KEY_RIGHT) //right = 2
             {
             if (intruderValidMove(2) == true) {
-                layout = intruderMoveChased(2, index);
+                layout = intruderMoveChased(2, layout);
             }
         }
         else if (key == GLUT_KEY_LEFT) //left =1
             {
             if (intruderValidMove(1) == true) {
-                layout = intruderMoveChased(1, index);
+                layout = intruderMoveChased(1, layout);
             }
         }
         else if (key == GLUT_KEY_DOWN) //down = 4
             {
             if (intruderValidMove(4) == true) {
-                layout = intruderMoveChased(4, index);
+                layout = intruderMoveChased(4, layout);
             }
         }
         else if (key == GLUT_KEY_UP) //up = 3
             {
             if (intruderValidMove(3) == true) {
-                layout = intruderMoveChased(3, index); 
+                layout = intruderMoveChased(3, layout); 
             }
         }
+    }
+
+    // Check if game over
+    if (intruder_caught == true) {
+        printf("Game Over\n");
     }
     
     // Request display update

@@ -64,7 +64,90 @@ void grid(string type, float x, float y, float width, float height)
     glEnd();
 }
 
+void drawVision(float x, float y, unsigned int row, unsigned int col){
+    unsigned int count = 0;
+    unsigned int i = row;
+    unsigned int j = col - 1;
+    float startx = x - GRID_SIZE;
+    float starty = y;
 
+    glColor3f(0.812, 0.820, 0.827);
+        //left
+    glBegin(GL_POLYGON);
+        while(startx > 0 && count < vision && j >= 0){
+            if(layout[i][j] != PATH){
+                break;
+            }
+            glVertex2f(startx, starty);
+            glVertex2f(startx, starty + GRID_SIZE);
+            glVertex2f(startx + GRID_SIZE, starty + GRID_SIZE);
+            glVertex2f(startx + GRID_SIZE, starty);
+            startx -= GRID_SIZE;
+            j--;
+            count++;
+        }
+    glEnd();
+    
+        count = 0;
+        startx = x + GRID_SIZE;
+        j = col + 1;
+        //right
+    glBegin(GL_POLYGON);
+        while(x < LIMIT && count < vision && j < layout[0].size()){
+            if(layout[i][j] != PATH){
+                break;
+            }
+            glVertex2f(startx, starty);
+            glVertex2f(startx, starty + GRID_SIZE);
+            glVertex2f(startx + GRID_SIZE, starty + GRID_SIZE);
+            glVertex2f(startx + GRID_SIZE, starty);
+            startx += GRID_SIZE;
+            j++;
+            count++;
+        }
+    glEnd();
+
+        count = 0;
+        startx = x;
+        starty = y + GRID_SIZE;
+        j = col;
+        i = row - 1;
+        //up
+    glBegin(GL_POLYGON);
+        while(starty < LIMIT && count < vision && i >= 0){
+            if(layout[i][j] != PATH){
+                break;
+            }
+            glVertex2f(startx, starty);
+            glVertex2f(startx, starty + GRID_SIZE);
+            glVertex2f(startx + GRID_SIZE, starty + GRID_SIZE);
+            glVertex2f(startx + GRID_SIZE, starty);
+            starty += GRID_SIZE;
+            i--;
+            count++;
+        }
+    glEnd();
+    
+        count = 0;
+        startx = x;
+        starty = y; //- GRID_SIZE;
+        i = row + 1;
+        //down
+    glBegin(GL_POLYGON);
+        while(starty > 0 && count < vision && i < layout.size()){
+            if(layout[i][j] != PATH){
+                break;
+            }
+            glVertex2f(startx, starty);
+            glVertex2f(startx, starty - GRID_SIZE);
+            glVertex2f(startx + GRID_SIZE, starty - GRID_SIZE);
+            glVertex2f(startx + GRID_SIZE, starty);
+            starty -= GRID_SIZE;
+            i++;
+            count++;
+        }
+    glEnd();
+}
 
 void Coordinate(){
     glBegin(GL_LINES);
@@ -264,13 +347,12 @@ void warehouse()
                 {
                     grid("robot",startx,starty,GRID_SIZE,GRID_SIZE);
                 }
-    			
-    	    //intruder
+                //intruder
                 else if(layout[i][j]==4)
                 {
                     grid("intruder",startx,starty,GRID_SIZE,GRID_SIZE);
+                    drawVision(startx, starty, i, j);
                 }
-
                 startx +=GRID_SIZE;
             }
             starty +=GRID_SIZE;

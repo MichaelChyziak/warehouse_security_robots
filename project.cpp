@@ -13,6 +13,7 @@ using namespace std;
 #define LIMIT 50    // limit
 #define BOUNDARY 45
 #define START -1
+#define GRID_SIZE 4
 
 const float DEG2RAD = 3.14159/180;
 
@@ -30,9 +31,9 @@ int layout[LENGTH][LENGTH] =  { { 1, 1, 1, 1, 1, 1, 1, 5, 1, 1 }, ///1
                                 { 1, 0, 3, 0, 0, 0, 0, 0, 0, 1 }, ///9
                                 { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }};//10
 
-int k =0;
+int k =0; 
 
-//for writng texts
+//for writng texts 
 void writeText(GLfloat x, GLfloat y, int length, const char* text)
 {
     glColor3f(0.0, 0.0, 0.0);
@@ -166,28 +167,28 @@ void warehouse()
         {   //walls
             if(layout[i][j]==1)
             {
-                grid("wall",startx,starty,4,4);
+                grid("wall",startx,starty,GRID_SIZE,GRID_SIZE);
             }
             //doors
-            else if(layout[i][j]==5)
+            else if(layout[i][j]==2)
             {
-                grid("door",startx,starty,4,4);
+                grid("door",startx,starty,GRID_SIZE,GRID_SIZE);
             }
             //robot
             else if(layout[i][j]==3)
             {
-                grid("robot",startx,starty,4,4);
+                grid("robot",startx,starty,GRID_SIZE,GRID_SIZE);
             }
 			
-			 //intruder
+	    //intruder
             else if(layout[i][j]==4)
             {
-                grid("intruder",startx+1,starty,4,4);
+                grid("intruder",startx,starty,GRID_SIZE,GRID_SIZE);
             }
 
-            startx +=4;
+            startx +=GRID_SIZE;
         }
-        starty +=4;
+        starty +=GRID_SIZE;
         startx =0;
 
     }
@@ -213,8 +214,8 @@ int main(int argc, char *argv[])
 
     setup();
     glutDisplayFunc(display);
-	//glutSpecialFunc(keyboard);
-	glutTimerFunc(500,moveRobot,0);
+    //glutSpecialFunc(keyboard);
+    glutTimerFunc(500,moveRobot,0);
 
 
     glutMainLoop();

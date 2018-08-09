@@ -83,28 +83,53 @@ void setup()
     gluOrtho2D(START, LIMIT, START, LIMIT); // -x1, x2, -y1, y2
 }
 
-//keyboard movement
+//keyboard movement for intruder
 void keyboard(int key, int x, int y)
 {
+//////////////////////////   
+//modify the intruder position
+  if(key ==49)// 1 pressed
+  {
+	intruderStart(1,index);
+  }
+	 //modify the intruder position
+  else if(key ==50) //2 pressed
+  {
+	intruderStart(2,index);
+  }
+	
+  //modify the intruder position
+  else if(key ==51) //3 pressed
+  {
+	intruder(3,index);
+  }
+	
    //modify the intruder position
-   if (key == GLUT_KEY_RIGHT)
+  else if(key ==52) //4 pressed
+  {
+	intruder(4,index);
+  }
+///////////////////////////
+
+   if (key == GLUT_KEY_RIGHT) //right = 2
         {
-           // layout[8][2]=0 ;
-            //layout[8][3]=3 ;
-                
+             intruderMove(2,index);   
         }
-    else if (key == GLUT_KEY_LEFT)
+    else if (key == GLUT_KEY_LEFT) //left =1
         {
-               // rY -= 15;
+              intruderMove(1,index);   
         }
-    else if (key == GLUT_KEY_DOWN)
+    else if (key == GLUT_KEY_DOWN) //down = 4
         {
-               // rX -= 15;
+               intruderMove(4,index);   
         }
-    else if (key == GLUT_KEY_UP)
+    else if (key == GLUT_KEY_UP) //up = 3
         {
-                //rX += 15;
+                intruderMove(3,index);   
         }
+	
+    intruderFound();
+	
     // Request display update
     glutPostRedisplay();
 }

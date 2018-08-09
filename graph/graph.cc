@@ -1,4 +1,5 @@
 #include "graph.h"
+#include <stdio.h>
 
 // Each edge costs 1
 // Creates a vector which is like a 2D array.
@@ -65,7 +66,7 @@ std::pair<unsigned int, unsigned int> getNodeCoordinate(std::vector<std::vector<
 	std::pair<unsigned int, unsigned int> coordinate;
 	for(int i = 1; i < warehouse.size(); i++){
 		for(int j = 1; j < warehouse[0].size(); j++){
-			if(numOfZeros == node){
+			if(numOfZeros == node && warehouse[i][j] == 0) {
 				coordinate = std::make_pair(i, j);
 				return coordinate;
 			}
@@ -74,5 +75,6 @@ std::pair<unsigned int, unsigned int> getNodeCoordinate(std::vector<std::vector<
 		}
 	}
 	coordinate = std::make_pair(-1, -1);
+
 	return coordinate;
 }

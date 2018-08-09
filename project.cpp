@@ -12,7 +12,7 @@
 
 using namespace std;
 
-#define LIMIT 50    // limit
+#define LIMIT 120    // limit
 #define BOUNDARY 45
 #define START -1
 #define GRID_SIZE 4

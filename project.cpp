@@ -135,38 +135,70 @@ void keyboard(unsigned char key, int x, int y)
 //keyboard movement for intruder
 void specialKeys(int key, int x, int y)
 {
-    //////////////////////////   
-    //modify the intruder position
-    if (key == GLUT_KEY_RIGHT) //right = 2
-        {
-        if (intruderValidMove(2) == true) {
-            layout = intruderMovePatrol(2, index);
-            index++;
+    if (state == STATES::intruder_patrol) {
+        //////////////////////////   
+        //modify the intruder position
+        if (key == GLUT_KEY_RIGHT) //right = 2
+            {
+            if (intruderValidMove(2) == true) {
+                layout = intruderMovePatrol(2, index);
+                index++;
+            }
+        }
+        else if (key == GLUT_KEY_LEFT) //left =1
+            {
+            if (intruderValidMove(1) == true) {
+                layout = intruderMovePatrol(1, index);
+                index++;
+            }
+        }
+        else if (key == GLUT_KEY_DOWN) //down = 4
+            {
+            if (intruderValidMove(4) == true) {
+                layout = intruderMovePatrol(4, index);
+                index++;
+            }
+        }
+        else if (key == GLUT_KEY_UP) //up = 3
+            {
+            if (intruderValidMove(3) == true) {
+                layout = intruderMovePatrol(3, index); 
+                index++;
+            }
+        }
+        
+        if (intruderFound() == true) {
+            state = STATES::intruder_chase;
         }
     }
-    else if (key == GLUT_KEY_LEFT) //left =1
-        {
-        if (intruderValidMove(1) == true) {
-            layout = intruderMovePatrol(1, index);
-            index++;
+    else if (state == STATES::intruder_chase) {
+        //////////////////////////   
+        //modify the intruder position
+        if (key == GLUT_KEY_RIGHT) //right = 2
+            {
+            if (intruderValidMove(2) == true) {
+                layout = intruderMoveChased(2, index);
+            }
+        }
+        else if (key == GLUT_KEY_LEFT) //left =1
+            {
+            if (intruderValidMove(1) == true) {
+                layout = intruderMoveChased(1, index);
+            }
+        }
+        else if (key == GLUT_KEY_DOWN) //down = 4
+            {
+            if (intruderValidMove(4) == true) {
+                layout = intruderMoveChased(4, index);
+            }
+        }
+        else if (key == GLUT_KEY_UP) //up = 3
+            {
+            if (intruderValidMove(3) == true) {
+                layout = intruderMoveChased(3, index); 
+            }
         }
     }
-    else if (key == GLUT_KEY_DOWN) //down = 4
-        {
-        if (intruderValidMove(4) == true) {
-            layout = intruderMovePatrol(4, index);
-            index++;
-        }
-    }
-    else if (key == GLUT_KEY_UP) //up = 3
-        {
-        if (intruderValidMove(3) == true) {
-            layout = intruderMovePatrol(3, index); 
-            index++;
-        }
-    }
-    
-    // intruderFound();
     
     // Request display update
     glutPostRedisplay();

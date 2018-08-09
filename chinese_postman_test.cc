@@ -179,6 +179,8 @@ int main(int argc, char* argv[]) {
 		                                                    			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 																		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1}	};
 
+
+
 //	std::vector<std::vector<unsigned int>> graph_big = createWarehouseGraph(warehouse_big);
 	std::vector<std::vector<unsigned int>> graph_big_michael = createWarehouseGraphMichael(warehouse_big);
 	std::vector<unsigned int> node_traversal_robot = chinesePostman(graph_big_michael, 0);
@@ -189,6 +191,11 @@ int main(int argc, char* argv[]) {
 		printf("%d->", node_traversal_robot[index_traversal]);
 	}
 	printf("DONE\n");
+
+	std::cout << std::endl << std::endl;
+
+	std::pair<unsigned int, unsigned int> coor = getNodeCoordinate(warehouse_big, 232);
+	std::cout << "i: " << coor.first << " j: " << coor.second << std::endl;
 
 	return 0;
 }

@@ -59,3 +59,20 @@ std::vector<unsigned int> getGraphNodeNieghbours(std::vector<std::vector<unsigne
 	}
 	return node_edges;
 }
+
+std::pair<unsigned int, unsigned int> getNodeCoordinate(std::vector<std::vector<unsigned int>> warehouse, unsigned int node) {
+	unsigned int numOfZeros = 0;
+	std::pair<unsigned int, unsigned int> coordinate;
+	for(int i = 1; i < warehouse.size(); i++){
+		for(int j = 1; j < warehouse[0].size(); j++){
+			if(numOfZeros == node){
+				coordinate = std::make_pair(i, j);
+				return coordinate;
+			}
+			if(warehouse[i][j] == 0)
+				numOfZeros++;
+		}
+	}
+	coordinate = std::make_pair(-1, -1);
+	return coordinate;
+}

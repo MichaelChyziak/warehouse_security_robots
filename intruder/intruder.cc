@@ -6,16 +6,16 @@ std::vector<std::vector<unsigned int>> intruderStart(unsigned int start_intruder
 	std::vector<std::vector<unsigned int>> warehouse_with_robots;
 	std::pair<unsigned int, unsigned int> intruder_position;
 
-	if (start == 1) {
+	if (start_intruder_position == 1) {
 		intruder = 6;
 	} 
-	else if (start == 2) {
+	else if (start_intruder_position == 2) {
 		intruder = 111;
 	} 
-	else if (start == 3) {
+	else if (start_intruder_position == 3) {
 		intruder = 142;
 	}
-	else { // start == 4 or by default
+	else { // start_intruder_position == 4 or by default
 		intruder = 263;
 	}
 
@@ -28,8 +28,9 @@ std::vector<std::vector<unsigned int>> intruderStart(unsigned int start_intruder
 }
 
 // 1 = left, 2 = right, 3 = up, 4 = down
-std::vector<std::vector<unsigned int>> intruderMove(unsigned int move) {
+std::vector<std::vector<unsigned int>> intruderMove(unsigned int move, unsigned int current_index) {
 	std::pair<unsigned int, unsigned int> intruder_position;
+	std::vector<std::vector<unsigned int>> warehouse_with_robots;
 	unsigned int position_count;
 	unsigned int nodes_counted = 0;
 
@@ -81,9 +82,10 @@ std::vector<std::vector<unsigned int>> intruderMove(unsigned int move) {
 	}
 
 	// intruder position after moving
+	warehouse_with_robots = warehousePatrolUpdate(current_index);
 	intruder_position = getNodeCoordinate(warehouse_big, intruder);
 
-	// Create graph again with updated intruder location
+	// Create graph again with intruder location
 	warehouse_with_robots[intruder_position.first][intruder_position.second] = 4;
 
 }

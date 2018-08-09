@@ -7,7 +7,7 @@ OBJS=$(subst .cc,.o,$(SRCS))
 all: warehouse_security_robots chinese_test robots_test
 
 warehouse_security_robots: $(OBJS)
-	$(CXX) -o warehouse_security_robots warehouse_security_robots.cc $(OBJS)
+	$(CXX) -o warehouse_security_robots project.cpp $(OBJS)
 
 chinese_test: $(OBJS)
 	$(CXX) -o chinese_postman_test chinese_postman_test.cc $(OBJS)

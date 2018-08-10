@@ -224,7 +224,7 @@ void keyboard(unsigned char key, int x, int y)
     }
 
     // quit program
-    else if (key == 27) { //escape pressed
+    if (key == 27) { //escape pressed
         exit(0);
     }
 

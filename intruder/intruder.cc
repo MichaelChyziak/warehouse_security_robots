@@ -1,5 +1,5 @@
 #include "intruder.h"
-
+#include <stdio.h>
 unsigned int intruder;
 unsigned int robot_1 = -1;
 unsigned int robot_2 = -1;
@@ -148,7 +148,7 @@ std::vector<std::vector<unsigned int>> intruderMovePatrol(unsigned int move, uns
 // index must be > 0
 std::vector<std::vector<unsigned int>> intruderMoveChased(unsigned int move, std::vector<std::vector<unsigned int>> &old_graph) {
 
-	unsigned int search_depth = 5;
+	unsigned int search_depth = 10;
 	std::pair<unsigned int, unsigned int> robot_1_position;
 	std::pair<unsigned int, unsigned int> robot_2_position;
 	std::pair<unsigned int, unsigned int> robot_3_position;
@@ -164,13 +164,13 @@ std::vector<std::vector<unsigned int>> intruderMoveChased(unsigned int move, std
 		// Update robot locations to be global and not local to their warehouse segment
 		for (graph_index_row = 0; graph_index_row < old_graph.size(); graph_index_row++) {
 			for (graph_index_col = 0; graph_index_col < old_graph[0].size(); graph_index_col++) {
-				if (old_graph[graph_index_row][graph_index_col] == 0) {
+				if (old_graph[graph_index_row][graph_index_col] == 0 || old_graph[graph_index_row][graph_index_col] == 4) {
 					nodes_counted++;
 				}
 				else if (old_graph[graph_index_row][graph_index_col] == 3) {
-					nodes_counted++;
+					//nodes_counted++;
 					if (robot_1 == -1) {
-						robot_1 = nodes_counted-1;
+						robot_1 = nodes_counted;
 					}
 					else if (robot_2 == -1) {
 						robot_2 = nodes_counted;
@@ -179,6 +179,7 @@ std::vector<std::vector<unsigned int>> intruderMoveChased(unsigned int move, std
 						robot_3 = nodes_counted;
 						break;
 					}
+					nodes_counted++;
 				}
 			}
 			if (robot_3 != -1) {

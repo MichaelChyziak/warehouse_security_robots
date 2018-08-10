@@ -120,8 +120,8 @@ std::vector<std::pair<std::vector<unsigned int>, unsigned int>> robotPathsScore(
 				// Get the final score since we don't "catch" intruder
 				if (path_index == robot_paths[robot_paths_index].size() - 1 || path_index == intruder_paths[intruder_paths_index].size() -1) {
 					// TODO TESTING
-			 		score += dijkstraCost(graph, robot_paths[robot_paths_index][path_index], intruder_paths[intruder_paths_index][path_index]);
-			 		// score += manhattanDistance(robot_paths[robot_paths_index][path_index], intruder_paths[intruder_paths_index][path_index]);
+			 		// score += dijkstraCost(graph, robot_paths[robot_paths_index][path_index], intruder_paths[intruder_paths_index][path_index]);
+			 		score += manhattanDistance(robot_paths[robot_paths_index][path_index], intruder_paths[intruder_paths_index][path_index]);
 				}
 			}
 		}
@@ -208,36 +208,28 @@ std::vector<std::vector<unsigned int>> controlRobots(std::vector<std::vector<uns
 	intruder_locations = futureLocationsOptimized(graph, intruder, intruder_locations, search_depth);
 	intruder_paths = futurePaths(graph, intruder, intruder_locations);
 
-	// Cutoff robot 1 score
+	// Set cutoff robots
 	if (robot_closest == robot_1) {
 		robot_cutoff_1 = robot_2;
+		robot_cutoff_2 = robot_3;
 	}
-	else {
+	else if (robot_closest == robot_2) {
 		robot_cutoff_1 = robot_1;
+		robot_cutoff_2 = robot_3;
+
 	}
+	else { // robot_closest == robot_3
+		robot_cutoff_1 = robot_1;
+		robot_cutoff_2 = robot_2;
+	}
+
+	// Cutoff robot 1 score
 	cutoff_locations_1 = futureLocations(graph, robot_cutoff_1, search_depth);
 	cutoff_locations_1 = futureLocationsOptimized(graph, robot_cutoff_1, cutoff_locations_1, search_depth);
 	cutoff_paths_1 = futurePaths(graph, robot_cutoff_1, cutoff_locations_1);
 	path_score_pairs_1 = robotPathsScore(graph, cutoff_paths_1, intruder_paths);
 
 	// Cutoff robot score 2
-	if (robot_closest == robot_1) {
-		if (robot_cutoff_1 == robot_2) {
-			robot_cutoff_2 = robot_3;
-		}
-		else {
-			robot_cutoff_2 = robot_2;
-		}
-	}
-	else {
-		if (robot_cutoff_1 == robot_1) {
-			robot_cutoff_2 = robot_3;
-		}
-		else {
-			robot_cutoff_2 = robot_1;
-		}
-	}
-
 	cutoff_locations_2 = futureLocations(graph, robot_cutoff_2, search_depth);
 	cutoff_locations_2 = futureLocationsOptimized(graph, robot_cutoff_2, cutoff_locations_2, search_depth);
 	cutoff_paths_2 = futurePaths(graph, robot_cutoff_2, cutoff_locations_2);

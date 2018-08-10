@@ -31,6 +31,8 @@ bool intruder_caught = false;
 
 std::vector<std::vector<unsigned int>>layout;
 
+void moveRobot(int value);
+
 //for writng texts 
 void writeText(GLfloat x, GLfloat y, int length, const char* text)
 {
@@ -229,6 +231,10 @@ void keyboard(unsigned char key, int x, int y)
     // Check if game over
     if (intruder_caught == true) {
         printf("Game Over\n");
+        state = STATES::patrol;
+        index = 0;
+        intruder_caught = false;
+        glutTimerFunc(500, moveRobot, 0);
     }
 	
     // Request display update
@@ -316,6 +322,10 @@ void specialKeys(int key, int x, int y)
     // Check if game over
     if (intruder_caught == true) {
         printf("Game Over\n");
+        state = STATES::patrol;
+        index = 0;
+        intruder_caught = false;
+        glutTimerFunc(500, moveRobot, 0);
     }
     
     // Request display update

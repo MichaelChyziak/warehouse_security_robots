@@ -23,6 +23,10 @@ const float DEG2RAD = 3.14159/180;
 float dataMatrix[12][3];
 const int LENGTH = 10;
 
+extern unsigned int robot_1;
+extern unsigned int robot_2;
+extern unsigned int robot_3;
+
 enum STATES {patrol, intruder_patrol, intruder_chase};
 STATES state = STATES::patrol;
 
@@ -235,6 +239,9 @@ void keyboard(unsigned char key, int x, int y)
         index = 0;
         intruder_caught = false;
         glutTimerFunc(500, moveRobot, 0);
+        robot_1 = -1;
+        robot_2 = -1;
+        robot_3 = -1;
     }
 	
     // Request display update
@@ -326,6 +333,9 @@ void specialKeys(int key, int x, int y)
         index = 0;
         intruder_caught = false;
         glutTimerFunc(500, moveRobot, 0);
+        robot_1 = -1;
+        robot_2 = -1;
+        robot_3 = -1;
     }
     
     // Request display update
